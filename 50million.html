@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>50 million people</title>
+	<meta charset="UTF-8"> 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		var page =0;
+		var all = 50000000;
+		var usercount = prompt("Please enter how many users you want to see per page", 5000);
+		var pagecount = all / usercount;
+
+		function getrandomemoji(i) {
+			var items = Array("#128102","#128103","#128104","#128105","#128116","#128117","#128118","#128124");
+			var item = items[Math.floor((Math.random() * items.length) )];
+			return item;
+		}
+		function hackeduser(profile) {
+			$.ajax({
+  				url: 'https://randomuser.me/api/'+profile,
+  				dataType: 'json',
+  				success: function(data) {
+    				console.log(data);
+  				}
+			});
+		}
+		function createusers() {
+			if(page<=pagecount) {
+				usercountpage = usercount*page;
+				$(document.body).append('<h1>#50million</h1>');
+				for (var i = 1; i <= usercount; i++) {
+					emoji = getrandomemoji(i);
+					if(page<1)
+						$(document.body).append('<a href="#" onclick="hackeduser('+(i)+')" id="'+(i)+'" title="hacked user #'+(i)+'" >&'+emoji+'</a>');
+					else
+						$(document.body).append('<a href="#" onclick="hackeduser('+(i+usercountpage)+')" id="'+(i+usercountpage)+'" title="hacked user #'+(i+usercountpage)+'" >&'+emoji+'</a>');
+
+				}
+				if(page>0) 
+					$(document.body).append('<br><br>users '+(page*usercount+1)+'-'+(usercount*++page)+' from 50.000.000 <a href="#" onclick="$(document.body).empty();createusers('+page+')" title="next page">&gt;&gt;</a><br><br>');
+				else 
+					$(document.body).append('<br><br>users 1-'+(usercount)+' from 50.000.000 <a href="#" onclick="$(document.body).empty();createusers('+page+++')" title="next page">&gt;&gt;</a><br><br>');
+			}
+		}
+
+	</script>
+	<style type="text/css">
+		body {
+			font-family: Arial;
+		}
+		a {
+			text-decoration: none;
+		}
+	</style>
+</head>
+<body onload="createusers(page)">
+	
+</body>
+</html>
