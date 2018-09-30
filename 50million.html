@@ -8,7 +8,7 @@
 	<script type="text/javascript">
 		var page =0;
 		var all = 50000000;
-		var usercount = 5000;//prompt("Please enter how many users you want to see per page", 5000);
+		var usercount = 750;	//prompt("Please enter how many users you want to see per page", 5000);
 		var pagecount = all / usercount;
 
 		function getrandomemoji(i) {
@@ -141,7 +141,10 @@
 	<p>Media tells us that 50 million facebook accounts got hacked. <a href="https://www.bbc.com/news/amp/technology-45686890" title="Facebook security breach: Up to 50m accounts attacked">https://www.bbc.com/news/amp/technology-45686890</a></p>
 	<p>This experiment gives insight how many is actually 50 million people, by representing each person with an anonymous emoji icon. Only by clicking on each and every emoji, one realizes that actually real people are affected by this breach, giving each affected individual a face and data.</p>
 	<p>Although displayed data is random only, the shear amount of affected persons is incredible. By clicking on an emoji, you will be presented with an individual profile.</p>
+	<p>In case you really want to see how much 50 million is, please click <a href="#" onclick='$("#left").empty();usercount=50000000;createusers();'' title="50million">here</a> (Warning! Your computer might turn unresponsive. Click on your own risk. I'm not responsible for any data loss or any other damage. After adding this feature during development, I did not try myself...) 
 	<p>A big thank you goes to <a href="https://randomuser.me" title="Random user generator">https://randomuser.me</a> on which the service relies and which serves the user profiles. Credits go to <a href="https://openstreetmap.org" title="openstreetmap">openstreetmap</a> for their maps. </p>
+	<p>Get your privacy back, show own responsibility for what you tell whom where. Use distinct and strong passwords. Support <a href="https://eff.org" title="Electronic Frontier Foundation">Electronic Frontier Foundation</a>. 
+
 	<div id="left"></div>
 	<div id="right">
 		<div id="head"><h2>hackedbook</h2></div>
@@ -154,5 +157,7 @@
 			<div id="Map" style="height:250px"></div>
 		</div>
 	</div>
+	<p>I'm not affiliated to any of the above organisations or services</p>
+	<p>If you have questions, you can contact me via <a href="mailto:50million@tutamail.com">50million@tutamail.com</p>
 </body>
 </html>
