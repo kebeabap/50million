@@ -21,21 +21,36 @@
   				url: 'https://randomuser.me/api/?seed='+profile,
   				dataType: 'json',
   				success: function(data) {
-    				fillprofile(data);
+    				fillprofile(data,profile);
   				}
 			});
 		}
 
-		function fillprofile(data) {
+		function fillprofile(data, profile) {
 			$("#profilephoto").attr("src",data['results'][0].picture.large);
 			$("#profilename").html(data['results'][0].name.first+' '+data['results'][0].name.last).css('textTransform', 'capitalize');
 			$("#address").html(
 				data['results'][0].location.street+"<br>"+
 				data['results'][0].location.postcode+" "+
-				data['results'][0].location.city+"<br>"
+				data['results'][0].location.city+"<br>"+
+				data['results'][0].phone+" (phone)<br>"+
+				data['results'][0].cell+" (cell)<br>"
+			);
+			$("#logindetails").html(
+				"<h3>Login details</h3>"+
+				"email: "+data['results'][0].email+"<br>"+
+				"username: "+data['results'][0].login.username+"<br>"+
+				"password: "+data['results'][0].login.password+"<br>"+
+				"<h3>Database information</h3>"+
+				"uuid: "+data['results'][0].login.uuid+"<br>"+
+				"salt: "+data['results'][0].login.salt+"<br>"+
+				"md5 hash: "+data['results'][0].login.md5+"<br>"+
+				"sha1 hash: "+data['results'][0].login.sha1+"<br>"+
+				"sha256 hash: "+data['results'][0].login.sha256+"<br>"
 			);
 			$("#Map").empty();
 			$("#Map").html(createmap(data['results'][0].location.coordinates.latitude, data['results'][0].location.coordinates.latitude));
+			$("#hackeduser"+profile).html("&#128532");
 		}
 		
 		function createmap(lat, lon) {
@@ -63,9 +78,9 @@
 				for (var i = 1; i <= usercount; i++) {
 					emoji = getrandomemoji(i);
 					if(page<1)
-						$("#left").append('<a href="#" onclick="hackeduser('+(i)+')" id="'+(i)+'" title="hacked user #'+(i)+'" >&'+emoji+'</a>');
+						$("#left").append('<a href="#" onclick="hackeduser('+(i)+')" id="hackeduser'+(i)+'" title="hacked user #'+(i)+'" >&'+emoji+'</a>');
 					else
-						$("#left").append('<a href="#" onclick="hackeduser('+(i+usercountpage)+')" id="'+(i+usercountpage)+'" title="hacked user #'+(i+usercountpage)+'" >&'+emoji+'</a>');
+						$("#left").append('<a href="#" onclick="hackeduser('+(i+usercountpage)+')" id="hackeduser'+(i+usercountpage)+'" title="hacked user #'+(i+usercountpage)+'" >&'+emoji+'</a>');
 
 				}
 				if(page>0) 
@@ -114,6 +129,10 @@
 			clear: left;
 			padding-left: 15px;
 		}
+		#logindetails {
+			float: left;
+			padding-left: 15px;
+		}
 	</style>
 </head>
 <body onload="createusers();">
@@ -121,7 +140,7 @@
 	<p>Media tells us that 50 million facebook accounts got hacked. <a href="https://www.bbc.com/news/amp/technology-45686890" title="Facebook security breach: Up to 50m accounts attacked">https://www.bbc.com/news/amp/technology-45686890</a></p>
 	<p>This experiment gives insight how many is actually 50 million people, by representing each person with an anonymous emoji icon. Only by clicking on each and every emoji, one realizes that actually real people are affected by this breach, giving each affected individual a face and data.</p>
 	<p>Although displayed data is random only, the shear amount of affected persons is incredible. By clicking on an emoji, you will be presented with an individual profile.</p>
-	<p>A big thank you goes to <a href="https://randomuser.me" title="Random user generator">https://randomuser.me</a> on which the service relies and which serves the user profiles</p>
+	<p>A big thank you goes to <a href="https://randomuser.me" title="Random user generator">https://randomuser.me</a> on which the service relies and which serves the user profiles. Credits go to <a href="https://openstreetmap.org" title="openstreetmap">openstreetmap</a> for their maps. </p>
 	<div id="left"></div>
 	<div id="right">
 		<div id="head"><h2>hackedbook</h2></div>
@@ -130,6 +149,7 @@
 		<div id="headerimage"></div>
 		<div id="otherdetails">
 			<p id="address"></p>
+			<p id="logindetails"></p>
 			<div id="Map" style="height:250px"></div>
 		</div>
 	</div>
