@@ -4,42 +4,75 @@
 	<title>50 million people</title>
 	<meta charset="UTF-8"> 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="openlayers/OpenLayers.js"></script>
 	<script type="text/javascript">
 		var page =0;
 		var all = 50000000;
-		var usercount = prompt("Please enter how many users you want to see per page", 5000);
+		var usercount = 5000;//prompt("Please enter how many users you want to see per page", 5000);
 		var pagecount = all / usercount;
 
 		function getrandomemoji(i) {
 			var items = Array("#128102","#128103","#128104","#128105","#128116","#128117","#128118","#128124");
 			var item = items[Math.floor((Math.random() * items.length) )];
-			return item;
+			return "#128102";
 		}
 		function hackeduser(profile) {
 			$.ajax({
-  				url: 'https://randomuser.me/api/'+profile,
+  				url: 'https://randomuser.me/api/?seed='+profile,
   				dataType: 'json',
   				success: function(data) {
-    				console.log(data);
+    				fillprofile(data);
   				}
 			});
 		}
+
+		function fillprofile(data) {
+			$("#profilephoto").attr("src",data['results'][0].picture.large);
+			$("#profilename").html(data['results'][0].name.first+' '+data['results'][0].name.last).css('textTransform', 'capitalize');
+			$("#address").html(
+				data['results'][0].location.street+"<br>"+
+				data['results'][0].location.postcode+" "+
+				data['results'][0].location.city+"<br>"
+			);
+			$("#Map").empty();
+			$("#Map").html(createmap(data['results'][0].location.coordinates.latitude, data['results'][0].location.coordinates.latitude));
+		}
+		
+		function createmap(lat, lon) {
+		
+		    var zoom           = 4;
+
+		    var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+		    var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+		    var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
+
+		    map = new OpenLayers.Map("Map");
+		    var mapnik         = new OpenLayers.Layer.OSM();
+		    map.addLayer(mapnik);
+
+		    var markers = new OpenLayers.Layer.Markers( "Markers" );
+		    map.addLayer(markers);
+		    markers.addMarker(new OpenLayers.Marker(position));
+
+		    map.setCenter(position, zoom);
+		}
+
 		function createusers() {
 			if(page<=pagecount) {
 				usercountpage = usercount*page;
-				$(document.body).append('<h1>#50million</h1>');
 				for (var i = 1; i <= usercount; i++) {
 					emoji = getrandomemoji(i);
 					if(page<1)
-						$(document.body).append('<a href="#" onclick="hackeduser('+(i)+')" id="'+(i)+'" title="hacked user #'+(i)+'" >&'+emoji+'</a>');
+						$("#left").append('<a href="#" onclick="hackeduser('+(i)+')" id="'+(i)+'" title="hacked user #'+(i)+'" >&'+emoji+'</a>');
 					else
-						$(document.body).append('<a href="#" onclick="hackeduser('+(i+usercountpage)+')" id="'+(i+usercountpage)+'" title="hacked user #'+(i+usercountpage)+'" >&'+emoji+'</a>');
+						$("#left").append('<a href="#" onclick="hackeduser('+(i+usercountpage)+')" id="'+(i+usercountpage)+'" title="hacked user #'+(i+usercountpage)+'" >&'+emoji+'</a>');
 
 				}
 				if(page>0) 
-					$(document.body).append('<br><br>users '+(page*usercount+1)+'-'+(usercount*++page)+' from 50.000.000 <a href="#" onclick="$(document.body).empty();createusers('+page+')" title="next page">&gt;&gt;</a><br><br>');
+					$("#left").append('<br><br>users '+(page*usercount+1)+'-'+(usercount*++page)+' from 50.000.000 <a href="#" onclick=$("#left").empty();createusers('+page+') title="next page">&gt;&gt;</a><br><br>');
 				else 
-					$(document.body).append('<br><br>users 1-'+(usercount)+' from 50.000.000 <a href="#" onclick="$(document.body).empty();createusers('+page+++')" title="next page">&gt;&gt;</a><br><br>');
+					$("#left").append('<br><br>users 1-'+(usercount)+' from 50.000.000 <a href="#" onclick=$("#left").empty();createusers('+(page++)+') title="next page">&gt;&gt;</a><br><br>');
+
 			}
 		}
 
@@ -51,9 +84,54 @@
 		a {
 			text-decoration: none;
 		}
+		#left, #right { width: 50%; float: left; }
+		#right { float: left; margin-top: -16px;}
+		#head { 
+			width: 100%; 
+			background-image: linear-gradient(rgb(78, 105, 162), rgb(59, 89, 152) 50%); 
+			height: 42px;
+		}
+		#head h2 { 
+			font-family: Arial; color:#fff; font-size: 20px; display: block; padding: 20px 0px 5px 5px; 
+		}
+		#photo {
+			width: 100%;
+			height: 150px;
+			background-image: url("world.png") ;
+			background-repeat: no-repeat;
+			background-size: 100% 150px;
+		}
+		#profilephoto {
+			float: left;
+			border: 3px solid #fff;
+			margin: 50px 0px 0px 12px;
+		}
+		#profilename {
+			float: left;
+			margin: -25px 0px 0px 10px;
+		}
+		#address {
+			clear: left;
+			padding-left: 15px;
+		}
 	</style>
 </head>
-<body onload="createusers(page)">
-	
+<body onload="createusers();">
+	<h1>#50million</h1>
+	<p>Media tells us that 50 million facebook accounts got hacked. <a href="https://www.bbc.com/news/amp/technology-45686890" title="Facebook security breach: Up to 50m accounts attacked">https://www.bbc.com/news/amp/technology-45686890</a></p>
+	<p>This experiment gives insight how many is actually 50 million people, by representing each person with an anonymous emoji icon. Only by clicking on each and every emoji, one realizes that actually real people are affected by this breach, giving each affected individual a face and data.</p>
+	<p>Although displayed data is random only, the shear amount of affected persons is incredible. By clicking on an emoji, you will be presented with an individual profile.</p>
+	<p>A big thank you goes to <a href="https://randomuser.me" title="Random user generator">https://randomuser.me</a> on which the service relies and which serves the user profiles</p>
+	<div id="left"></div>
+	<div id="right">
+		<div id="head"><h2>hackedbook</h2></div>
+		<div id="photo"><img id="profilephoto" src="" alt="" width="20%" /></div>
+		<div id="name"><h3 id="profilename"></h3></div>
+		<div id="headerimage"></div>
+		<div id="otherdetails">
+			<p id="address"></p>
+			<div id="Map" style="height:250px"></div>
+		</div>
+	</div>
 </body>
 </html>
